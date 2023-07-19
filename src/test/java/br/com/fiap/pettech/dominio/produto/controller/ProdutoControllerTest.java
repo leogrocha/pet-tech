@@ -1,7 +1,6 @@
 package br.com.fiap.pettech.dominio.produto.controller;
 
 import br.com.fiap.pettech.dominio.produto.dto.ProdutoDTO;
-import br.com.fiap.pettech.dominio.produto.entitie.Produto;
 import br.com.fiap.pettech.dominio.produto.service.ProdutoService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

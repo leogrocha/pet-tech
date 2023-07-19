@@ -30,7 +30,7 @@ public class PessoaFisicaController {
     }
 
     @PostMapping
-    public ResponseEntity save(@RequestBody PessoaFisica pessoaFisica) {
+    public ResponseEntity<?> save(@RequestBody PessoaFisica pessoaFisica) {
         repo.save(pessoaFisica);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -42,7 +42,7 @@ public class PessoaFisicaController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable  Long id) {
+    public ResponseEntity<?> delete(@PathVariable  Long id) {
         repo.delete(id);
         return ResponseEntity.ok("Delete com sucesso");
     }

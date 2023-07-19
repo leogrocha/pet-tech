@@ -1,21 +1,16 @@
 package br.com.fiap.pettech.dominio.produto.controller;
 
 import br.com.fiap.pettech.dominio.produto.dto.ProdutoDTO;
-import br.com.fiap.pettech.dominio.produto.entitie.Produto;
 import br.com.fiap.pettech.dominio.produto.service.ProdutoService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -55,7 +50,7 @@ public class ProdutoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable UUID id) {
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
         produtoService.delete(id);
         return ResponseEntity.noContent().build();
     }

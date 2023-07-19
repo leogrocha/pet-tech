@@ -54,8 +54,6 @@ public class ProdutoServiceTests {
        Mockito.when(repository.findById(idNaoExistente)).thenReturn(Optional.empty());
     }
 
-
-
     @Test
     public void findAllDeveRetornarUmaListaDeProdutosDTO() {
         Page produtoDTO = service.findAll(this.pageRequest);

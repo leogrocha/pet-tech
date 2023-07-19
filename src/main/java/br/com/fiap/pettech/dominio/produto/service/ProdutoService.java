@@ -7,15 +7,12 @@ import br.com.fiap.pettech.dominio.produto.service.exception.ControllerNotFoundE
 import br.com.fiap.pettech.dominio.produto.service.exception.DatabaseException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -49,7 +46,7 @@ public class ProdutoService {
 
     public ProdutoDTO update(UUID id, ProdutoDTO produto) {
         try {
-            Produto buscaproduto = repo.getOne(id);
+            Produto buscaproduto = repo.getReferenceById(id);
             buscaproduto.setNome(produto.getNome());
             buscaproduto.setDescricao(produto.getDescricao());
             buscaproduto.setUrlImagem(produto.getUrlImagem());
