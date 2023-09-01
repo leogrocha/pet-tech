@@ -87,4 +87,16 @@ public class ProdutoDTO {
     public List<CategoriaDTO> getCategorias() {
         return categorias;
     }
+
+    @Override
+    public String toString() {
+        return "ProdutoDTO{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", urlImagem='" + urlImagem + '\'' +
+                ", preco=" + preco +
+                ", categorias=" + categorias +
+                '}';
+    }
 }

@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -27,18 +28,20 @@ public class ProdutoService {
     @Autowired
     private ICategoriaRepository categoriaRepository;
 
-
+    @Transactional(readOnly = true)
     public Page<ProdutoDTO> findAll(PageRequest pagina) {
         var produtos = repo.findAll(pagina);
 
         return produtos.map(prod ->  new ProdutoDTO(prod, prod.getCategorias()));
     }
 
+    @Transactional(readOnly = true)
     public ProdutoDTO findById(UUID id) {
         var produto = repo.findById(id).orElseThrow(() -> new ControllerNotFoundException("Produto não encontrado"));
         return new ProdutoDTO(produto, produto.getCategorias());
     }
 
+    @Transactional
     public ProdutoDTO save(ProdutoDTO produto) {
         Produto entity = new Produto();
         mapperDtoToEntity(produto, entity);
@@ -47,6 +50,7 @@ public class ProdutoService {
         return new ProdutoDTO(produtoSaved, produtoSaved.getCategorias());
     }
 
+    @Transactional
     public ProdutoDTO update(UUID id, ProdutoDTO produto) {
         try {
             Produto buscaproduto = repo.getReferenceById(id);
@@ -60,6 +64,7 @@ public class ProdutoService {
         }
     }
 
+    @Transactional
     public void delete(UUID id) {
         try {
             repo.deleteById(id);
@@ -72,10 +77,10 @@ public class ProdutoService {
     }
 
     public void mapperDtoToEntity(ProdutoDTO dto, Produto entity) {
-        entity.setNome(entity.getNome());
-        entity.setDescricao(entity.getDescricao());
-        entity.setPreco(entity.getPreco());
-        entity.setUrlImagem(entity.getUrlImagem());
+        entity.setNome(dto.getNome());
+        entity.setDescricao(dto.getDescricao());
+        entity.setPreco(dto.getPreco());
+        entity.setUrlImagem(dto.getUrlImagem());
         entity.getCategorias().clear();
 
         for (CategoriaDTO categoriaDTO: dto.getCategorias()) {
