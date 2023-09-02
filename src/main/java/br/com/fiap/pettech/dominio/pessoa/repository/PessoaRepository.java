@@ -1,8 +1,8 @@
 package br.com.fiap.pettech.dominio.pessoa.repository;
 
 import br.com.fiap.pettech.dominio.pessoa.entity.Pessoa;
-import br.com.fiap.pettech.dominio.produto.service.exception.ControllerNotFoundException;
 
+import br.com.fiap.pettech.exception.service.ControllerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

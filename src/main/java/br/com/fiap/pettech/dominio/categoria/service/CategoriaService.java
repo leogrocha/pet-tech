@@ -3,9 +3,7 @@ package br.com.fiap.pettech.dominio.categoria.service;
 import br.com.fiap.pettech.dominio.categoria.dto.CategoriaDTO;
 import br.com.fiap.pettech.dominio.categoria.entity.Categoria;
 import br.com.fiap.pettech.dominio.categoria.repository.ICategoriaRepository;
-import br.com.fiap.pettech.dominio.produto.service.exception.ControllerNotFoundException;
-import br.com.fiap.pettech.exceptions.NotFoundException;
-import jakarta.persistence.EntityNotFoundException;
+import br.com.fiap.pettech.exception.service.ControllerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class CategoriaService {
