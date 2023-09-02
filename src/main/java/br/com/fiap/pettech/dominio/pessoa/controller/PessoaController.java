@@ -1,8 +1,13 @@
 package br.com.fiap.pettech.dominio.pessoa.controller;
 
+import br.com.fiap.pettech.dominio.pessoa.dto.PessoaDTO;
 import br.com.fiap.pettech.dominio.pessoa.entity.Pessoa;
 import br.com.fiap.pettech.dominio.pessoa.repository.IPessoaRepository;
+import br.com.fiap.pettech.dominio.pessoa.service.PessoaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,40 +26,41 @@ import java.util.List;
 @RequestMapping("/pessoas")
 public class PessoaController {
 
-    private final IPessoaRepository repo;
+    private final PessoaService pessoaService;
 
-    @Autowired
-    public PessoaController(IPessoaRepository repo) {
-        this.repo = repo;
+    public PessoaController(PessoaService pessoaService) {
+        this.pessoaService = pessoaService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Pessoa>> findAll(
-            @RequestParam(value = "pagina", defaultValue = "1") Integer pagina,
-            @RequestParam(value = "tamanho", defaultValue = "10") Integer tamanho) {
-        return ResponseEntity.ok(repo.findAll(pagina, tamanho));
+    public ResponseEntity<Page<PessoaDTO>> findAll(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "linesPerPage", defaultValue = "10") Integer linesPorPage) {
+        PageRequest pageRequest = PageRequest.of(page, linesPorPage);
+        var pessoas = pessoaService.findAll(pageRequest);
+        return ResponseEntity.ok().body(pessoas);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pessoa> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(repo.findById(id));
+    public ResponseEntity<PessoaDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(pessoaService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Pessoa> save(@RequestBody Pessoa pessoa) {
-        var pessoaSaved = repo.save(pessoa);
+    public ResponseEntity<PessoaDTO> save(@Valid @RequestBody PessoaDTO pessoaDTO) {
+        var pessoaSaved = pessoaService.save(pessoaDTO);
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(pessoaSaved);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pessoa> update(@RequestBody Pessoa pessoa, @PathVariable Long id) {
-        var pessoaUpdated = repo.update(id, pessoa);
+    public ResponseEntity<PessoaDTO> update(@Valid @RequestBody PessoaDTO pessoaDTO, @PathVariable Long id) {
+        var pessoaUpdated = pessoaService.update(id, pessoaDTO);
         return ResponseEntity.ok(pessoaUpdated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id) {
-        repo.deleteById(id);
+    public ResponseEntity<Void> update(@PathVariable Long id) {
+        pessoaService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

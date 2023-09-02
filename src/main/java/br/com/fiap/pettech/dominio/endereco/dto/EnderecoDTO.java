@@ -30,9 +30,9 @@ public record EnderecoDTO(
 
     public static Endereco mapperDtoToEntity(EnderecoDTO enderecoDTO, Endereco endereco) {
         endereco.setRua(enderecoDTO.rua());
-        endereco.setRua(enderecoDTO.cidade());
-        endereco.setRua(enderecoDTO.estado());
-        endereco.setRua(enderecoDTO.cep());
+        endereco.setCidade(enderecoDTO.cidade());
+        endereco.setEstado(enderecoDTO.estado());
+        endereco.setCep(enderecoDTO.cep());
         return endereco;
     }
 

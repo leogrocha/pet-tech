@@ -15,7 +15,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 @Repository
-public class PessoaRepository implements IPessoaRepository{
+public class PessoaRepository{
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -24,14 +24,14 @@ public class PessoaRepository implements IPessoaRepository{
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Override
+
     public List<Pessoa> findAll(int page, int pageSize) {
         int offset = (page - 1) * pageSize;
         String sql = "SELECT * FROM pessoas limit ? OFFSET ?";
         return jdbcTemplate.query(sql, new Object[]{pageSize, offset}, new PessoaRowMapper());
     }
 
-    @Override
+
     public Pessoa findById(Long id) {
         String sql = "SELECT * FROM pessoas WHERE id = ?";
         List<Pessoa> pessoas = 
@@ -39,7 +39,7 @@ public class PessoaRepository implements IPessoaRepository{
         return pessoas.isEmpty() ? null : pessoas.get(0);
     }
 
-    @Override
+
     public Pessoa save(Pessoa pessoa) {
         
         try {
@@ -52,7 +52,7 @@ public class PessoaRepository implements IPessoaRepository{
         return pessoa;
     }
 
-    @Override
+
     public Pessoa update(Long id, Pessoa pessoa) {
         
         String sql = "UPDATE pessoas SET cpf = ?, nome = ?, nascimento = ?, email = ? WHERE id = ?";
@@ -65,7 +65,7 @@ public class PessoaRepository implements IPessoaRepository{
         return pessoa;
     }
 
-    @Override
+
     public void deleteById(Long id) {
         String sql = "DELETE FROM pessoas where id = ?";
         int rowAffected = jdbcTemplate.update(sql, id);
