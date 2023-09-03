@@ -1,6 +1,9 @@
 package br.com.fiap.pettech.dominio.pessoa.controller;
 
+import br.com.fiap.pettech.dominio.endereco.dto.EnderecoDTO;
 import br.com.fiap.pettech.dominio.pessoa.dto.PessoaDTO;
+import br.com.fiap.pettech.dominio.pessoa.dto.PessoaEnderecoDTO;
+import br.com.fiap.pettech.dominio.pessoa.dto.PessoaUsuarioDTO;
 import br.com.fiap.pettech.dominio.pessoa.entity.Pessoa;
 import br.com.fiap.pettech.dominio.pessoa.repository.IPessoaRepository;
 import br.com.fiap.pettech.dominio.pessoa.service.PessoaService;
@@ -28,13 +31,14 @@ public class PessoaController {
 
     private final PessoaService pessoaService;
 
+    @Autowired
     public PessoaController(PessoaService pessoaService) {
         this.pessoaService = pessoaService;
     }
 
     @GetMapping
-    public ResponseEntity<Page<PessoaDTO>> findAll(
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
+    public ResponseEntity<Page<PessoaEnderecoDTO>> findAll(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "linesPerPage", defaultValue = "10") Integer linesPorPage) {
         PageRequest pageRequest = PageRequest.of(page, linesPorPage);
         var pessoas = pessoaService.findAll(pageRequest);
@@ -42,19 +46,19 @@ public class PessoaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PessoaDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<PessoaEnderecoDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(pessoaService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<PessoaDTO> save(@Valid @RequestBody PessoaDTO pessoaDTO) {
-        var pessoaSaved = pessoaService.save(pessoaDTO);
+    public ResponseEntity<PessoaUsuarioDTO> save(@Valid @RequestBody PessoaUsuarioDTO pessoaUsuarioDTO) {
+        var pessoaSaved = pessoaService.save(pessoaUsuarioDTO);
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(pessoaSaved);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PessoaDTO> update(@Valid @RequestBody PessoaDTO pessoaDTO, @PathVariable Long id) {
-        var pessoaUpdated = pessoaService.update(id, pessoaDTO);
+    public ResponseEntity<PessoaUsuarioDTO> update(@Valid @RequestBody PessoaUsuarioDTO pessoaUsuarioDTO, @PathVariable Long id) {
+        var pessoaUpdated = pessoaService.update(id, pessoaUsuarioDTO);
         return ResponseEntity.ok(pessoaUpdated);
     }
 

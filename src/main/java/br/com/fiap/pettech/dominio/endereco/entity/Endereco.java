@@ -1,6 +1,8 @@
 package br.com.fiap.pettech.dominio.endereco.entity;
 
 import br.com.fiap.pettech.dominio.endereco.dto.EnderecoDTO;
+import br.com.fiap.pettech.dominio.endereco.dto.EnderecoPessoaDTO;
+import br.com.fiap.pettech.dominio.pessoa.entity.Pessoa;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -20,7 +22,12 @@ public class Endereco {
 
     private String cep;
 
+    @ManyToOne
+    @JoinColumn(name = "pessoa_id", nullable = false)
+    private Pessoa pessoa;
+
     public Endereco(){}
+
 
     public Endereco(Long id, String rua, String cidade, String estado, String cep) {
         this.id = id;
@@ -36,6 +43,10 @@ public class Endereco {
         cidade = dto.cidade();
         estado = dto.estado();
         cep = dto.cep();
+    }
+    public Endereco(EnderecoPessoaDTO dto, Pessoa pessoa){
+        this(dto.id(), dto.rua(), dto.cidade(), dto.estado(), dto.cep());
+        this.pessoa = pessoa;
     }
 
     public Long getId() {
@@ -78,6 +89,14 @@ public class Endereco {
         this.cep = cep;
     }
 
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -101,4 +120,6 @@ public class Endereco {
         result = 31 * result + (cep != null ? cep.hashCode() : 0);
         return result;
     }
+
+
 }

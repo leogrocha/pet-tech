@@ -15,7 +15,7 @@ public record PessoaDTO(
         @NotBlank(message = "Nome não pode ser vazio")
         String nome,
 
-        @NotBlank(message = "Data de nascimento não pode ser vazia")
+        @NotNull(message = "Data de nascimento não pode ser vazia")
         @PastOrPresent(message = "Nascimento não pode ser uma data maior do que a atual")
         LocalDate nascimento,
 
@@ -42,6 +42,10 @@ public record PessoaDTO(
         pessoa.setCpf(pessoaDTO.cpf());
         pessoa.setEmail(pessoaDTO.email());
         return pessoa;
+    }
+
+    public PessoaDTO(Pessoa pessoa) {
+        this(pessoa.getId(), pessoa.getNome(), pessoa.getNascimento(), pessoa.getCpf(), pessoa.getEmail());
     }
 
 }

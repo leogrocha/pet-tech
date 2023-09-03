@@ -1,9 +1,14 @@
 package br.com.fiap.pettech.dominio.pessoa.entity;
 
+import br.com.fiap.pettech.dominio.endereco.entity.Endereco;
 import br.com.fiap.pettech.dominio.pessoa.dto.PessoaDTO;
+import br.com.fiap.pettech.dominio.pessoa.dto.PessoaUsuarioDTO;
+import br.com.fiap.pettech.dominio.usuario.entity.Usuario;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_pessoa")
@@ -20,6 +25,13 @@ public class Pessoa {
     private String cpf;
 
     private String email;
+
+    @OneToMany(mappedBy = "pessoa")
+    private Set<Endereco> enderecos = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     public Pessoa() {
     }
@@ -38,6 +50,11 @@ public class Pessoa {
         nascimento = pessoaDTO.nascimento();
         cpf = pessoaDTO.cpf();
         email = pessoaDTO.email();
+    }
+
+    public Pessoa(PessoaUsuarioDTO pessoaUsuarioDTO, Usuario usuario) {
+        this(pessoaUsuarioDTO.id(), pessoaUsuarioDTO.nome(), pessoaUsuarioDTO.nascimento(), pessoaUsuarioDTO.cpf(), pessoaUsuarioDTO.email());
+        this.usuario = usuario;
     }
 
     public Long getId() {
@@ -81,6 +98,18 @@ public class Pessoa {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     @Override

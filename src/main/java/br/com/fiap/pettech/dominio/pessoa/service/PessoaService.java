@@ -3,8 +3,11 @@ package br.com.fiap.pettech.dominio.pessoa.service;
 import br.com.fiap.pettech.dominio.endereco.dto.EnderecoDTO;
 import br.com.fiap.pettech.dominio.endereco.entity.Endereco;
 import br.com.fiap.pettech.dominio.pessoa.dto.PessoaDTO;
+import br.com.fiap.pettech.dominio.pessoa.dto.PessoaEnderecoDTO;
+import br.com.fiap.pettech.dominio.pessoa.dto.PessoaUsuarioDTO;
 import br.com.fiap.pettech.dominio.pessoa.entity.Pessoa;
 import br.com.fiap.pettech.dominio.pessoa.repository.IPessoaRepository;
+import br.com.fiap.pettech.dominio.usuario.repository.UsuarioRepository;
 import br.com.fiap.pettech.exception.service.ControllerNotFoundException;
 import br.com.fiap.pettech.exception.service.DatabaseException;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,39 +22,50 @@ import org.springframework.transaction.annotation.Transactional;
 public class PessoaService {
 
     private final IPessoaRepository pessoaRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    public PessoaService(IPessoaRepository pessoaRepository) {
+    public PessoaService(IPessoaRepository pessoaRepository, UsuarioRepository usuarioRepository) {
         this.pessoaRepository = pessoaRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Transactional(readOnly = true)
-    public Page<PessoaDTO> findAll(PageRequest pageRequest) {
+    public Page<PessoaEnderecoDTO> findAll(PageRequest pageRequest) {
         Page<Pessoa> list = pessoaRepository.findAll(pageRequest);
-        return list.map(PessoaDTO::fromEntity);
+        return list.map(PessoaEnderecoDTO::fromEntity);
     }
 
     @Transactional(readOnly = true)
-    public PessoaDTO findById(Long id) {
-        return pessoaRepository.findById(id).map(PessoaDTO::fromEntity)
+    public PessoaEnderecoDTO findById(Long id) {
+        return pessoaRepository.findById(id).map(PessoaEnderecoDTO::fromEntity)
                 .orElseThrow(() -> new ControllerNotFoundException("Pessoa não encontrada"));
     }
 
     @Transactional
-    public PessoaDTO save(PessoaDTO pessoaDTO) {
-        Pessoa entity = PessoaDTO.toEntity(pessoaDTO);
-        var pessoaSaved = pessoaRepository.save(entity);
-        return PessoaDTO.fromEntity(pessoaSaved);
+    public PessoaUsuarioDTO save(PessoaUsuarioDTO pessoaUsuarioDTO) {
+
+        try {
+            var usuario = usuarioRepository.getReferenceById(pessoaUsuarioDTO.usuario().id());
+            Pessoa entity = PessoaUsuarioDTO.toEntity(pessoaUsuarioDTO, usuario);
+            var pessoaSaved = pessoaRepository.save(entity);
+            return PessoaUsuarioDTO.fromEntity(pessoaSaved);
+
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Usuário não encontrado");
+        }
+
     }
 
     @Transactional
-    public PessoaDTO update(Long id, PessoaDTO pessoaDTO) {
+    public PessoaUsuarioDTO update(Long id, PessoaUsuarioDTO pessoaUsuarioDTO) {
 
         try {
+            var usuario = usuarioRepository.getReferenceById(pessoaUsuarioDTO.usuario().id());
             Pessoa pessoa = pessoaRepository.getReferenceById(id);
-            PessoaDTO.mapperDtoToEntity(pessoaDTO, pessoa);
+            PessoaUsuarioDTO.mapperDtoToEntity(pessoaUsuarioDTO, pessoa, usuario);
             pessoa = pessoaRepository.save(pessoa);
-            return PessoaDTO.fromEntity(pessoa);
+            return PessoaUsuarioDTO.fromEntity(pessoa);
         } catch (EntityNotFoundException e) {
             throw new ControllerNotFoundException("Pessoa não encontrada, id: " + id);
         }
